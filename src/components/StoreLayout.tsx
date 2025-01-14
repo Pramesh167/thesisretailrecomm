@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { LayoutGrid, DoorOpen, ArrowRight } from 'lucide-react';
 
 interface StoreLayoutProps {
-  data?: Record<string, { 
-    section: number; 
-    priority: string; 
+  data?: Record<string, {
+    section: number;
+    priority: string;
     category: string;
     sub_category: string;
     products: Array<{
       name: string;
       id: string;
-    }> ;
+    }>;
   }>;
   loading?: boolean;
 }
@@ -23,8 +23,8 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
     const productsInSection = data
       ? Object.entries(data).filter(([_, value]) => value.section === index)
       : [];
-    
-    const totalProducts = productsInSection.reduce((acc, [_, value]) => 
+
+    const totalProducts = productsInSection.reduce((acc, [_, value]) =>
       acc + (value.products?.length || 0), 0);
 
     // Generate dynamic aisle name based on the most common product or category
@@ -42,7 +42,7 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
   function getAisleName(productsInSection: any[]) {
     const productNames = productsInSection.flatMap(([_, value]) => value.products.map((product: any) => product.name));
     const categoryNames = productsInSection.flatMap(([_, value]) => value.sub_category);
-    
+
     // Get the most common product name or category (whichever has more occurrences)
     const mostCommonName = findMostCommonName(productNames) || findMostCommonName(categoryNames);
     return mostCommonName || "Uncategorized Aisle";
@@ -53,7 +53,7 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
     const frequencyMap: Record<string, number> = {};
     let maxCount = 0;
     let mostCommonName = '';
-    
+
     arr.forEach(name => {
       frequencyMap[name] = (frequencyMap[name] || 0) + 1;
       if (frequencyMap[name] > maxCount) {
@@ -61,7 +61,7 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
         mostCommonName = name;
       }
     });
-    
+
     return mostCommonName;
   }
 
@@ -81,9 +81,10 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
     return priorityColors[priority] || 'bg-gray-100';
   };
 
+  // Aisle View Modal
   const AisleView = ({ section }: { section: any }) => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-6 w-3/4 h-3/4 overflow-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-3/4 h-3/4 max-h-[80vh] overflow-auto">
         <div className="flex justify-between mb-4">
           <h3 className="text-lg font-medium text-gray-900">
             {section.aisleName} - Aisle {section.id + 1}
@@ -95,7 +96,7 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
             ✕
           </button>
         </div>
-        
+
         <div className="flex justify-between gap-4 h-full">
           {/* Left Rack */}
           <div className="w-1/2 bg-gray-100 p-4 rounded">
@@ -107,10 +108,10 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
                     <p className="text-sm font-medium">{details.products?.[0]?.name || productId}</p>
                     <p className="text-xs text-gray-500">Priority: {details.priority}</p>
                   </div>
-              ))}
+                ))}
             </div>
           </div>
-          
+
           {/* Right Rack */}
           <div className="w-1/2 bg-gray-100 p-4 rounded">
             <h4 className="text-md font-medium mb-2">Right Rack</h4>
@@ -121,7 +122,7 @@ const StoreLayout: React.FC<StoreLayoutProps> = ({ data, loading }) => {
                     <p className="text-sm font-medium">{details.products?.[0]?.name || productId}</p>
                     <p className="text-xs text-gray-500">Priority: {details.priority}</p>
                   </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>

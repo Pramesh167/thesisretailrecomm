@@ -62,7 +62,9 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
       const formData = new FormData();
       formData.append('file', file);
       
-      await processDataFile(formData);
+      await processDataFile(formData, (progress) => {
+        setProgress(`Uploading file... ${progress}%`);
+      });
       toast.success('Data processed successfully!');
       setProgress('Data processed successfully!');
       onUploadComplete?.();
@@ -71,7 +73,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
         setProgress(null);
         setIsUploading(false);
       }, 2000);
-      
+        
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error processing file. Please try again.';
       setError(message);
